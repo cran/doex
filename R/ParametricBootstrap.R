@@ -1,19 +1,22 @@
-PB=function(data,group,rept=10000){
+PB=function(data,group,rept=100000){
 
-  hacim=tapply(data, group, length)
-  grupsayisi=length(tapply(data, group, length))
-  ortalama=tapply(data, group, mean)
-  varyans=tapply(data, group, var)
+  n=tapply(data, group, length)
+  k=length(tapply(data, group, length))
+  xbar=tapply(data, group, mean)
+  var=tapply(data, group, var)
 
-  sb=sum(hacim*ortalama^2/varyans)-((sum(hacim*ortalama/varyans))^2)/(sum(hacim/varyans));
+  sb=sum(n*xbar^2/var)-((sum(n*xbar/var))^2)/(sum(n/var));
 
   p=0;
   for(i in 1:rept){
-    z=rnorm(grupsayisi);
-    u=rchisq(grupsayisi,hacim-1);
-    PB=(sum(z^2*(hacim-1)/u))-(((sum((sqrt(hacim)*z*(hacim-1))/(sqrt(varyans)*u)))^2)/(sum(hacim*(hacim-1)/(varyans*u))));
+    z=rnorm(k);
+    u=rchisq(k,n-1);
+    PB=(sum(z^2*(n-1)/u))-(((sum((sqrt(n)*z*(n-1))/(sqrt(var)*u)))^2)/(sum(n*(n-1)/(var*u))));
     if(PB>sb){p=p+1}
   }
   pvalue=p/rept;
-  return(list(p.value=pvalue))
+  result=matrix(c(round(pvalue,digits=4)))
+  rownames(result)=c("p-value")
+  colnames(result)=c("Parametric Bootstrap")
+  return(t(result))
 }

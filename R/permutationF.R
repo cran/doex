@@ -1,9 +1,9 @@
-PF=function(data,group,rept=10000){
+PF=function(data,group,rept=100000){
 
-  hacim=tapply(data, group, length)
-  grupsayisi=length(tapply(data, group, length))
-  ortalama=tapply(data, group, mean)
-  varyans=tapply(data, group, var)
+  n=tapply(data, group, length)
+  k=length(tapply(data, group, length))
+  xbar=tapply(data, group, mean)
+  var=tapply(data, group, var)
   Fobs=as.numeric(summary(aov(data~as.factor(group)))[[1]][["F value"]][1]);
   Fstar=numeric(rept);
 
@@ -13,5 +13,8 @@ PF=function(data,group,rept=10000){
   }
 
   pvalue=mean(Fstar>=Fobs);
-  return(list(p.value=pvalue))
+  result=matrix(c(round(pvalue,digits=4)))
+  rownames(result)=c("p-value")
+  colnames(result)=c("Permutation F")
+  return(t(result))
 }

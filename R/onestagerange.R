@@ -1,39 +1,40 @@
-OSR=function(data,group,nout=1,rept=10000){
+OSR=function(data,group,nout=1,rept=100000){
 
-  hacim=tapply(data, group, length)
-  grupsayisi=length(tapply(data, group, length))
-  ortalama=tapply(data, group, mean)
-  varyans=tapply(data, group, var)
-  N=sum(hacim);
+  n=tapply(data, group, length)
+  k=length(tapply(data, group, length))
+  xbar=tapply(data, group, mean)
+  var=tapply(data, group, var)
+  N=sum(n);
 
   vary=function(data){return(var(sample(data,length(data)-nout)))}
-  varyans.=tapply(data, group, vary)
+  var.=tapply(data, group, vary)
 
-  maxvar=max(varyans.);
-  maxvar.=max(varyans./hacim);
+  maxvar=max(var.);
+  maxvar.=max(var./n);
 
-  U=(1/hacim)+(1/hacim*sqrt((1/(hacim-1))*((maxvar/varyans.)-1)))
-  V=(1/hacim)-(1/hacim*sqrt(((hacim-1))*((maxvar/varyans.)-1)))
+  U=(1/n)+(1/n*sqrt((1/(n-1))*((maxvar/var.)-1)))
+  V=(1/n)-(1/n*sqrt(((n-1))*((maxvar/var.)-1)))
 
-  #gruplara ayırma
   a=1;b=0;top=0;data.=numeric(length(data));
-  for(i in 1:grupsayisi){
-    b=b+hacim[i];
+  for(i in 1:k){
+    b=b+n[i];
     data.[a:(b-1)]=data[a:(b-1)]*U[i];
     data.[b]=data[b]*V[i];
     a=b+1;
   }
-  ###
-  ortalama.=tapply(data., group, sum)
-  T=(max(ortalama.)-min(ortalama.))/sqrt(maxvar.);
+  xbar.=tapply(data., group, sum)
+  T=(max(xbar.)-min(xbar.))/sqrt(maxvar.);
 
   p=0;
   for(i in 1:rept){
-    t=rt(grupsayisi,hacim-2);
+    t=rt(k,n-2);
     dif=as.numeric(abs(diff(combn(t,2))));
     Q=max(dif);
     if(Q>T){p=p+1}
   }
   pvalue=p/rept;
-  return(list(p.value=pvalue));
+  result=matrix(c(round(pvalue,digits=4)))
+  rownames(result)=c("p-value")
+  colnames(result)=c("One-Stage Range Test")
+  return(t(result))
 }

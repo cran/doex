@@ -1,14 +1,14 @@
 AG=function(data,group){
 
-  hacim=tapply(data, group, length)
-  grupsayisi=length(tapply(data, group, length))
-  ortalama=tapply(data, group, mean)
-  varyans=tapply(data, group, var)
+  n=tapply(data, group, length)
+  k=length(tapply(data, group, length))
+  xbar=tapply(data, group, mean)
+  var=tapply(data, group, var)
 
-  w=(hacim/varyans)/sum(hacim/varyans);
-  genelortalama=sum(w*ortalama);
-  t=(ortalama-genelortalama)/sqrt(varyans/hacim);
-  v=hacim-1;
+  w=(n/var)/sum(n/var);
+  mu=sum(w*xbar);
+  t=(xbar-mu)/sqrt(var/n);
+  v=n-1;
   a=v-0.5;
   b=48*a^2;
   c=sqrt(a*log(1+(t^2/v)));
@@ -16,6 +16,9 @@ AG=function(data,group){
 
   AD=sum(z^2);
 
-  pvalue=1-pchisq(AD,grupsayisi-1);
-  return(list(test.statistic=AD,p.value=pvalue))
+  pvalue=1-pchisq(AD,k-1);
+  result=matrix(c(round(AD,digits=4),round(k-1),round(pvalue,digits=4)))
+  rownames(result)=c("Test Statistic","df","p-value")
+  colnames(result)=c("Alexander-Govern")
+  return(t(result))
 }

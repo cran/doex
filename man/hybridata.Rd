@@ -24,5 +24,4 @@ hybrid$species;
 \author{Mustafa CAVUS}
 \references{
 Weerahandi, S. (1995) Exact Statistical Methods for Data Analysis. New York: Springer.
-Hartung, J., Knapp, G. and Sinha, B.K. (2008) Statistical Meta-Analysis with Applications, New Jersey: John Wiley&Sons.
 }

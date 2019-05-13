@@ -1,4 +1,4 @@
-MGF=function(data,group,rept=100000){
+RGF=function(data,group,rept=100000){
 
     mu.huber=function(y, k=1.5, tol = 1.0e-6){
       y <- y[!is.na(y)]
@@ -53,7 +53,7 @@ MGF=function(data,group,rept=100000){
     pvalue=mean(U>grandtotal);
     result=matrix(c(round(pvalue,digits=4)))
     rownames(result)=c("p-value")
-    colnames(result)=c("MGF test")
+    colnames(result)=c("RGF test")
     return(t(result))
 }
 

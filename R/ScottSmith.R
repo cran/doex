@@ -1,13 +1,16 @@
 SS=function(data,group){
 
-  hacim=tapply(data, group, length)
-  grupsayisi=length(tapply(data, group, length))
-  ortalama=tapply(data, group, mean)
-  varyans=tapply(data, group, var)
-  varyans=varyans*((hacim-1)/(hacim-3));
+  n=tapply(data, group, length)
+  k=length(tapply(data, group, length))
+  xbar=tapply(data, group, mean)
+  var=tapply(data, group, var)
+  var.=var*((n-1)/(n-3));
 
-  SS=sum((hacim*(ortalama-mean(data))^2)/varyans);
+  SS=sum((n*(xbar-mean(data))^2)/var.);
 
-  pvalue=1-pchisq(SS,grupsayisi);
-  return(list(test.statistic=SS,p.value=pvalue))
+  pvalue=1-pchisq(SS,k);
+  result=matrix(c(round(SS,digits=4),round(k),round(pvalue,digits=4)))
+  rownames(result)=c("Test Statistic","df","p-value")
+  colnames(result)=c("Scott-Smith")
+  return(t(result))
 }

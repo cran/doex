@@ -1,17 +1,20 @@
 AF=function(data,group){
 
-  hacim <- tapply(data, group, length)
-  grupsayisi <- length(tapply(data, group, length))
-  ortalama <- tapply(data, group, mean)
-  varyans <- tapply(data, group, var)
-  N=sum(hacim);
+  n=tapply(data, group, length)
+  k=length(tapply(data, group, length))
+  xbar=tapply(data, group, mean)
+  var=tapply(data, group, var)
+  N=sum(n);
 
-  AF=((N-grupsayisi)/(grupsayisi-1))*((sum(hacim*(ortalama-mean(ortalama))^2))/(sum((hacim-1)*varyans)));
-  c=((N-grupsayisi)/(N*(grupsayisi-1)))*(sum((N-hacim)*varyans)/sum((hacim-1)*varyans));
+  AF=((N-k)/(k-1))*((sum(n*(xbar-mean(xbar))^2))/(sum((n-1)*var)));
+  c=((N-k)/(N*(k-1)))*(sum((N-n)*var)/sum((n-1)*var));
 
-  df1=((sum((1-hacim/N)*varyans))^2)/((sum(varyans^2))+(sum(hacim*varyans/N))^2-(2*sum(hacim*varyans^2/N)));
-  df2=(sum((hacim-1)*varyans))^2/(sum((hacim-1)*varyans^2));
+  df1=((sum((1-n/N)*var))^2)/((sum(var^2))+(sum(n*var/N))^2-(2*sum(n*var^2/N)));
+  df2=(sum((n-1)*var))^2/(sum((n-1)*var^2));
 
   pvalue=1-pf(AF/c,df1,df2);
-  return(list(test.statistic=AF,p.value=pvalue))
+  result=matrix(c(round(AF,digits=4),round(df1),round(df2),round(pvalue,digits=4)))
+  rownames(result)=c("Test Statistic","df1","df2","p-value")
+  colnames(result)=c("Approximate F")
+  return(t(result))
 }

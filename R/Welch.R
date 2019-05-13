@@ -1,19 +1,22 @@
 WE=function(data,group){
 
-  hacim=tapply(data, group, length)
-  grupsayisi=length(tapply(data, group, length))
-  ortalama=tapply(data, group, mean)
-  varyans=tapply(data, group, var)
-  agirlik1=hacim/varyans;
-  agirlik2=agirlik1/sum(agirlik1);
+  n=tapply(data, group, length)
+  k=length(tapply(data, group, length))
+  xbar=tapply(data, group, mean)
+  var=tapply(data, group, var)
+  weight1=n/var;
+  weight2=weight1/sum(weight1);
 
-  W1=sum(agirlik1*(ortalama-sum(agirlik2*ortalama))^2);
-  W2=(grupsayisi-1)+((2*((grupsayisi-2)/(grupsayisi+1))*sum((1-agirlik2)^2/(hacim-1))));
+  W1=sum(weight1*(xbar-sum(weight2*xbar))^2);
+  W2=(k-1)+((2*((k-2)/(k+1))*sum((1-weight2)^2/(n-1))));
   W=W1/W2;
 
-  df=((grupsayisi^2-1)/3)/sum((1-agirlik2)^2/(hacim-1));
+  df=((k^2-1)/3)/sum((1-weight2)^2/(n-1));
 
-  pvalue=1-pf(W,grupsayisi-1,df);
+  pvalue=1-pf(W,k-1,df);
+  result=matrix(c(round(W,digits=4),round(df),round(pvalue,digits=4)))
+  rownames(result)=c("Test Statistic","df","p-value")
+  colnames(result)=c("Welch")
 
-  return(list(test.statistic=W,p.value=pvalue))
+  return(t(result))
 }

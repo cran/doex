@@ -1,21 +1,24 @@
 MW=function(data,group){
 
-  hacim=tapply(data, group, length)
-  grupsayisi=length(tapply(data, group, length))
-  ortalama=tapply(data, group, mean)
-  varyans=tapply(data, group, var)
-  c=(hacim-1)/(hacim-3);
-  w=hacim/(c*varyans);
+  n=tapply(data, group, length)
+  k=length(tapply(data, group, length))
+  xbar=tapply(data, group, mean)
+  var=tapply(data, group, var)
+  c=(n-1)/(n-3);
+  w=n/(c*var);
   h=w/sum(w);
 
 
-  AWT1=sum(w*(ortalama-sum(h*ortalama))^2);
-  AWT2=(grupsayisi-1)+((2*((grupsayisi-2)/(grupsayisi+1))*sum((1-h)^2/(hacim-1))));
+  AWT1=sum(w*(xbar-sum(h*xbar))^2);
+  AWT2=(k-1)+((2*((k-2)/(k+1))*sum((1-h)^2/(n-1))));
   AWT=AWT1/AWT2;
 
-  df=((grupsayisi^2-1)/3)/sum((1-h)^2/(hacim-1));
+  df=((k^2-1)/3)/sum((1-h)^2/(n-1));
 
-  pvalue=1-pf(AWT,grupsayisi-1,df);
+  pvalue=1-pf(AWT,k-1,df);
+  result=matrix(c(round(AWT,digits=4),round(df),round(pvalue,digits=4)))
+  rownames(result)=c("Test Statistic","df","p-value")
+  colnames(result)=c("Modified Welch")
 
-  return(list(test.statistic=AWT,p.value=pvalue))
+  return(t(result))
 }

@@ -22,5 +22,4 @@ GF(hybrid$data,hybrid$species)
 \author{Mustafa CAVUS}
 \references{
 Weerahandi, S.(1994) ANOVA under unequal error variances, Biometrics, 51, 589-599.
-Weerahandi, S.(1995) Exact Statistical Methods for Data Analysis, Springer.
 }
